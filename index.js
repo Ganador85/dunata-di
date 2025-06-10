@@ -1,30 +1,45 @@
-
-const express = require("express");
-const { OpenAI } = require("openai");
-require("dotenv").config();
+const express = require('express');
+const path = require('path');
+const { Configuration, OpenAIApi } = require('openai');
+require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const port = process.env.PORT || 3000;
 
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
-app.use(express.static("public"));
 
-app.post("/api/chat", async (req, res) => {
-  const messages = req.body.messages || [];
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
+let messages = [];
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.post('/ask', async (req, res) => {
+  const userMessage = req.body.message;
+  messages.push({ role: 'user', content: userMessage });
+
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4-1106-preview",
+    const response = await openai.createChatCompletion({
+      model: 'gpt-4',
       messages: messages,
     });
-    const reply = completion.choices[0].message.content;
-    res.json({ reply });
+
+    const botMessage = response.data.choices[0].message.content;
+    messages.push({ role: 'assistant', content: botMessage });
+
+    res.json({ reply: botMessage });
   } catch (error) {
-    console.error("OpenAI klaida:", error);
-    res.status(500).json({ error: "Nepavyko gauti atsakymo" });
+    console.error(error);
+    res.status(500).json({ reply: 'Klaida iš OpenAI API.' });
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Serveris veikia: http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Serveris veikia: http://localhost:${port}`);
 });
