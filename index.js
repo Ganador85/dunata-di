@@ -25,8 +25,8 @@ app.post("/ask", async (req, res) => {
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
-        { role: "system", content: "Tu esi draugiškas pagalbininkas." },
-        { role: "user", content: message },
+        { role: "system", content: "Tu esi draugiškas AI pagalbininkas." },
+        { role: "user", content: message }
       ],
     });
 
@@ -34,7 +34,7 @@ app.post("/ask", async (req, res) => {
     res.json({ reply });
   } catch (error) {
     console.error("OpenAI klaida:", error.message);
-    res.status(500).json({ reply: "Klaida iš OpenAI pusės." });
+    res.status(500).json({ reply: "Klaida iš OpenAI." });
   }
 });
 
