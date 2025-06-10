@@ -11,13 +11,13 @@ const port = process.env.PORT || 10000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// API raktas
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public"))); // serve public folder
 
-// POST /ask maršrutas
+// ČIA SVARBIAUSIA – įjungiam static failus
+app.use(express.static(path.join(__dirname, "public")));
+
 app.post("/ask", async (req, res) => {
   const message = req.body.message;
 
@@ -38,7 +38,6 @@ app.post("/ask", async (req, res) => {
   }
 });
 
-// paleidžiam serverį
 app.listen(port, () => {
   console.log(`Serveris veikia: http://localhost:${port}`);
 });
