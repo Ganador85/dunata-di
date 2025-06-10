@@ -19,7 +19,7 @@ async function sendMessage() {
   userInput.value = "";
 
   try {
-    const response = await fetch("/ask", {
+    const response = await fetch("https://dunata-di.onrender.com/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message }),
