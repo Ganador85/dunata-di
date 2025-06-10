@@ -1,28 +1,33 @@
-const chatBox = document.getElementById('chat-box');
-const input = document.getElementById('user-input');
-const sendBtn = document.getElementById('send-btn');
+const chatBox = document.getElementById("chat-box");
+const userInput = document.getElementById("user-input");
+const sendButton = document.getElementById("send-button");
 
-sendBtn.addEventListener('click', async () => {
-  const userMessage = input.value;
-  if (!userMessage.trim()) return;
+sendButton.addEventListener("click", sendMessage);
 
-  // Atvaizduoti vartotojo žinutę
-  chatBox.innerHTML += `<p><strong>Jūs:</strong> ${userMessage}</p>`;
-  input.value = '';
+function appendMessage(sender, text) {
+  const messageElement = document.createElement("div");
+  messageElement.innerHTML = `<strong>${sender}:</strong> ${text}`;
+  chatBox.appendChild(messageElement);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+async function sendMessage() {
+  const message = userInput.value.trim();
+  if (!message) return;
+
+  appendMessage("labas", message);
+  userInput.value = "";
 
   try {
-    const response = await fetch('/ask', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message: userMessage }),
+    const response = await fetch("/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
     });
 
     const data = await response.json();
-    chatBox.innerHTML += `<p><strong>AI:</strong> ${data.reply}</p>`;
+    appendMessage("AI", data.reply);
   } catch (error) {
-    console.error(error);
-    chatBox.innerHTML += `<p style="color:red;"><strong>Klaida jungiantis prie serverio.</strong></p>`;
+    appendMessage("AI", "Klaida jungiantis prie serverio.");
   }
-});
+}
