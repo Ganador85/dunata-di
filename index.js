@@ -1,15 +1,14 @@
 const express = require("express");
 const path = require("path");
-const { OpenAIApi, Configuration } = require("openai");
+const { OpenAI } = require("openai");
 require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 10000;
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 app.use(express.json());
 app.use(express.static("public"));
@@ -18,7 +17,7 @@ app.post("/ask", async (req, res) => {
   const message = req.body.message;
 
   try {
-    const response = await openai.createChatCompletion({
+    const response = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
         { role: "system", content: "Tu esi draugiškas AI pagalbininkas." },
@@ -26,7 +25,7 @@ app.post("/ask", async (req, res) => {
       ]
     });
 
-    const reply = response.data.choices[0].message.content;
+    const reply = response.choices[0].message.content;
     res.json({ reply });
   } catch (error) {
     console.error("OpenAI klaida:", error.message);
