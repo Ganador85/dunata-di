@@ -1,4 +1,3 @@
-
 const chatForm = document.getElementById("chat-form");
 const userInput = document.getElementById("user-input");
 const chatBox = document.getElementById("chat-box");
@@ -28,10 +27,10 @@ chatForm.addEventListener("submit", async (e) => {
   userInput.value = "";
 
   try {
-    const res = await fetch("/api/chat", {
+    const res = await fetch("/ask", {  // ← Šita vieta buvo klaidinga
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages })
+      body: JSON.stringify({ message: question })
     });
     const data = await res.json();
     const reply = data.reply || "Atsiprašau, atsakymo gauti nepavyko.";
