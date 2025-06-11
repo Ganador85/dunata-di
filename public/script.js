@@ -5,7 +5,7 @@ const chatBox = document.getElementById("chat-box");
 let messages = [
   {
     role: "system",
-    content: "Tu esi AI pagalbininkas, kuris mandagiai ir aiškiai atsakinėja į vartotojo klausimus."
+    content: "Tu esi vartotojo asmeninis AI asistentas, kuris padeda atsakyti į klausimus aiškiai, mandagiai ir profesionaliai."
   }
 ];
 
